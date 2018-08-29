@@ -1,1 +1,5 @@
-name: openjdk-boshrelease
+name: openjdk
+blobstore:
+  provider: local
+  options:
+    blobstore_path: /tmp/openjdk
