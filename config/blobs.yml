@@ -1,3 +1,6 @@
 java/openjdk-1.8.0_181.tar.gz:
   size: 77662989
   sha: c06e25166619fe858c588b1809141335060e302f
+java/openjdk-11.0.0_28.tar.gz:
+  size: 193899675
+  sha: 2594e16aac0116f74c806463f60df0be8f8591ce
