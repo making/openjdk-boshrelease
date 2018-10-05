@@ -1,0 +1,15 @@
+name: openjdk
+version: 0.3.0
+commit_hash: 50759e7
+uncommitted_changes: false
+jobs:
+- name: java
+  version: 09090c4a0b9fcc2846d398adb789f686ccebc7e6
+  fingerprint: 09090c4a0b9fcc2846d398adb789f686ccebc7e6
+  sha1: fb5ceca929966101abcb6ee8194091d7c4114aed
+packages:
+- name: java
+  version: a59ab3f8f0695e4c084e601d5eeabfb9874a5358
+  fingerprint: a59ab3f8f0695e4c084e601d5eeabfb9874a5358
+  sha1: b631a78e915d2c34cbbd9a2b8b5e0795b64b7811
+  dependencies: []
