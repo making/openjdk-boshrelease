@@ -1,6 +1,6 @@
 ---
 resources:
-- name: repo
+- name: repo-11
   type: git
   source:
     uri: git@github.com:making/openjdk-boshrelease.git
@@ -10,11 +10,29 @@ resources:
     - ci/*
     # - manifest/*
     - README.md
-- name: repo-version
+- name: repo-version-11
   type: semver
   source:
     uri: git@github.com:making/openjdk-boshrelease.git
-    branch: version
+    branch: version_11
+    private_key: ((github-private-key))
+    file: version
+    driver: git
+- name: repo-8
+  type: git
+  source:
+    uri: git@github.com:making/openjdk-boshrelease.git
+    branch: 8.x
+    private_key: ((github-private-key))
+    ignore_paths:
+    - ci/*
+    # - manifest/*
+    - README.md
+- name: repo-version-8
+  type: semver
+  source:
+    uri: git@github.com:making/openjdk-boshrelease.git
+    branch: version_8
     private_key: ((github-private-key))
     file: version
     driver: git
@@ -31,11 +49,15 @@ jobs:
   plan:
   - aggregate:
     - get: repo
+      resource: repo-11
       trigger: true
   - task: download-blobs
     config:
       <<: *DOWNLOAD_BLOBS
   - task: bosh-create-release
+    params:
+      S3_ACCESS_KEY_ID: ((s3-access-key-id))
+      S3_SECRET_ACCESS_KEY: ((s3-secret-access-key))
     config:
       <<: *BOSH_CREATE_RELEASE
 - name: ship-it
@@ -43,10 +65,9 @@ jobs:
   plan:
   - aggregate:
     - get: repo
-      # passed:
-      # - bosh-deploy-dev-in-exsiting-env
-      # - bosh-deploy-dev-in-docker
+      resource: repo-11
     - get: repo-version
+      resource: repo-version-11
   - task: download-blobs
     config:
       <<: *DOWNLOAD_BLOBS
@@ -58,64 +79,9 @@ jobs:
       S3_ACCESS_KEY_ID: ((s3-access-key-id))
       S3_SECRET_ACCESS_KEY: ((s3-secret-access-key))
     config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: bosh/main-bosh-docker
-      inputs:
-      - name: repo
-      - name: repo-version
-      - name: compiled
-      outputs:
-      - name: releases
-      - name: updated-repo
-      run:
-        path: bash
-        args:
-        - -c
-        - |
-          set -e
-          cd repo
-          shopt -s dotglob
-          cp -r ./* ../updated-repo
-          VERSION=`cat ../repo-version/number`
-          TARBALL=openjdk-boshrelease-${VERSION}.tgz
-          ln -s ../compiled ./.downloads
-          ./add-blobs.sh
-          cat <<EOF > config/private.yml
-          ---
-          blobstore:
-            options:
-              access_key_id: ${S3_ACCESS_KEY_ID}
-              secret_access_key: ${S3_SECRET_ACCESS_KEY}
-          EOF
-          mkdir -p src
-          bosh create-release --force --version=${VERSION} --final --tarball=../releases/${TARBALL}
-          SHA1=`sha1sum ../releases/${TARBALL} | awk '{print $1}'`
-          mkdir -p .sha1
-          echo ${SHA1} > .sha1/${VERSION}
-          cp -r ./* ../updated-repo
-          cd ../updated-repo
-          git config --global user.email "${GIT_EMAIL}"
-          git config --global user.name "${GIT_NAME}"
-          git add -A
-          git commit -m "Release ${VERSION}"
-          # Release Note
-          cat <<EOF > ../releases/note.md
-          ## Deployment
-          \`\`\` yaml
-          # manifest.yml
-          ---
-          name: openjdk
-          releases:
-          - name: openjdk
-            version: ${VERSION}
-            url: https://github.com/making/openjdk-boshrelease/releases/download/${VERSION}/${TARBALL}
-            sha1: ${SHA1}
-          \`\`\`
-          EOF
+      <<: *SHIP_IT
   - put: repo
+    resource: repo-11
     params:
       repository: updated-repo
       tag: repo-version/number
@@ -127,41 +93,117 @@ jobs:
       globs:
       - releases/*.tgz
 
-########################################
-
-- name: bump-to-next-patch-version
+- name: bump-to-next-patch-version-11
   plan:
   - aggregate:
     - get: repo
+      resource: repo-11
       trigger: true
       passed:
       - ship-it
     - get: repo-version
+      resource: repo-version-11
       params:
         bump: patch
   - put: repo-version
+    resource: repo-version-11
     params:
       file: repo-version/number
 
-- name: bump-to-next-minor-version
+- name: bump-to-next-minor-version-11
   plan:
   - aggregate:
     - get: repo-version
+      resource: repo-version-11
       params:
         bump: minor
   - put: repo-version
+    resource: repo-version-11
     params:
       file: repo-version/number
 
-- name: bump-to-next-majar-version
+###############################################
+
+
+- name: bosh-deploy-dev-in-exsiting-env-8
+  serial: true
+  plan:
+  - aggregate:
+    - get: repo
+      resource: repo-8
+      trigger: true
+  - task: download-blobs
+    config:
+      <<: *DOWNLOAD_BLOBS
+  - task: bosh-create-release
+    params:
+      S3_ACCESS_KEY_ID: ((s3-access-key-id))
+      S3_SECRET_ACCESS_KEY: ((s3-secret-access-key))
+    config:
+      <<: *BOSH_CREATE_RELEASE
+- name: ship-it-8
+  serial: true
+  plan:
+  - aggregate:
+    - get: repo
+      resource: repo-8
+    - get: repo-version
+      resource: repo-version-8
+  - task: download-blobs
+    config:
+      <<: *DOWNLOAD_BLOBS
+  - task: create-release
+    params:
+      <<: *BOSH
+      GIT_EMAIL: ((git-email))
+      GIT_NAME: ((git-name))
+      S3_ACCESS_KEY_ID: ((s3-access-key-id))
+      S3_SECRET_ACCESS_KEY: ((s3-secret-access-key))
+    config:
+      <<: *SHIP_IT
+  - put: repo
+    resource: repo-8
+    params:
+      repository: updated-repo
+      tag: repo-version/number
+  - put: gh-release
+    params:
+      name: repo-version/number
+      tag: repo-version/number
+      body: releases/note.md
+      globs:
+      - releases/*.tgz
+
+- name: bump-to-next-patch-version-8
+  plan:
+  - aggregate:
+    - get: repo
+      resource: repo-8
+      trigger: true
+      passed:
+      - ship-it-8
+    - get: repo-version
+      resource: repo-version-8
+      params:
+        bump: patch
+  - put: repo-version
+    resource: repo-version-8
+    params:
+      file: repo-version/number
+
+- name: bump-to-next-minor-version-8
   plan:
   - aggregate:
     - get: repo-version
+      resource: repo-version-8
       params:
-        bump: majar
+        bump: minor
   - put: repo-version
+    resource: repo-version-8
     params:
       file: repo-version/number
+
+###############################################
 
 params:
   bosh: &BOSH
@@ -213,5 +255,72 @@ tasks:
         cd repo
         ln -s ../compiled ./.downloads
         ./add-blobs.sh
+        cat <<EOF > config/private.yml
+        ---
+        blobstore:
+          options:
+            access_key_id: ${S3_ACCESS_KEY_ID}
+            secret_access_key: ${S3_SECRET_ACCESS_KEY}
+        EOF
+        bosh upload-blobs
         mkdir -p src
         bosh create-release --name=openjdk-dev --force --timestamp-version --tarball=../releases/openjdk-boshrelease.tgz
+  ship-it: &SHIP_IT
+    platform: linux
+    image_resource:
+      type: docker-image
+      source:
+        repository: bosh/main-bosh-docker
+    inputs:
+    - name: repo
+    - name: repo-version
+    - name: compiled
+    outputs:
+    - name: releases
+    - name: updated-repo
+    run:
+      path: bash
+      args:
+      - -c
+      - |
+        set -e
+        cd repo
+        shopt -s dotglob
+        cp -r ./* ../updated-repo
+        VERSION=`cat ../repo-version/number`
+        TARBALL=openjdk-boshrelease-${VERSION}.tgz
+        ln -s ../compiled ./.downloads
+        ./add-blobs.sh
+        cat <<EOF > config/private.yml
+        ---
+        blobstore:
+          options:
+            access_key_id: ${S3_ACCESS_KEY_ID}
+            secret_access_key: ${S3_SECRET_ACCESS_KEY}
+        EOF
+        bosh upload-blobs
+        mkdir -p src
+        bosh create-release --force --version=${VERSION} --final --tarball=../releases/${TARBALL}
+        SHA1=`sha1sum ../releases/${TARBALL} | awk '{print $1}'`
+        mkdir -p .sha1
+        echo ${SHA1} > .sha1/${VERSION}
+        cp -r ./* ../updated-repo
+        cd ../updated-repo
+        git config --global user.email "${GIT_EMAIL}"
+        git config --global user.name "${GIT_NAME}"
+        git add -A
+        git commit -m "Release ${VERSION}"
+        # Release Note
+        cat <<EOF > ../releases/note.md
+        ## Deployment
+        \`\`\` yaml
+        # manifest.yml
+        ---
+        name: openjdk
+        releases:
+        - name: openjdk
+          version: ${VERSION}
+          url: https://github.com/making/openjdk-boshrelease/releases/download/${VERSION}/${TARBALL}
+          sha1: ${SHA1}
+        \`\`\`
+        EOF
