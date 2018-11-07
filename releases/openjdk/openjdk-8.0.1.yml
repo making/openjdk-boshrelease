@@ -1,0 +1,15 @@
+name: openjdk
+version: 8.0.1
+commit_hash: 76ac750
+uncommitted_changes: true
+jobs:
+- name: java
+  version: 09090c4a0b9fcc2846d398adb789f686ccebc7e6
+  fingerprint: 09090c4a0b9fcc2846d398adb789f686ccebc7e6
+  sha1: 7bdcacf36e8454a81d363f90ef705d2057b1371e
+packages:
+- name: java
+  version: 0ab4370b61ce3a2b28a73718dfd608dc0f393678
+  fingerprint: 0ab4370b61ce3a2b28a73718dfd608dc0f393678
+  sha1: ce19e6b3babec46b2d3f073a89413bf39ba975a2
+  dependencies: []
