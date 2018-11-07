@@ -2,3 +2,7 @@ java/openjdk-11.0.0_28.tar.gz:
   size: 193899675
   object_id: 29dc7c52-4863-4bbf-473b-66feb3b2954c
   sha: 2594e16aac0116f74c806463f60df0be8f8591ce
+java/openjdk-11.0.1_13.tar.gz:
+  size: 193889154
+  object_id: 58e12059-6725-408f-4a7a-9a4d8153a8ca
+  sha: 4bb2a70dacc0b54e8140cbb97240b9e9d101ccd2

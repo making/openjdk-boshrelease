@@ -1,0 +1,15 @@
+name: openjdk
+version: 11.0.1
+commit_hash: 52f13a5
+uncommitted_changes: true
+jobs:
+- name: java
+  version: 09090c4a0b9fcc2846d398adb789f686ccebc7e6
+  fingerprint: 09090c4a0b9fcc2846d398adb789f686ccebc7e6
+  sha1: 0de13b06ee2c2ab9e3aa446e1a70d52d8373f5cf
+packages:
+- name: java
+  version: b5c3397d2c44e9cef4cd539f553617d77065aa14
+  fingerprint: b5c3397d2c44e9cef4cd539f553617d77065aa14
+  sha1: 449e99cbe9d61899a21002261c02117abdec7713
+  dependencies: []
