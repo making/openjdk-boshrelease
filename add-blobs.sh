@@ -9,7 +9,7 @@ mkdir -p .downloads
 cd .downloads
 
 
-JDK_VERSION=11.0.0_28
+JDK_VERSION=11.0.1_13
 
 if [ ! -f ${DIR}/blobs/java/openjdk-${JDK_VERSION}.tar.gz ];then
     curl -L -O -J https://download.run.pivotal.io/openjdk-jdk/trusty/x86_64/openjdk-${JDK_VERSION}.tar.gz
