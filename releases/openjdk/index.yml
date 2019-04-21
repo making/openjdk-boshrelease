@@ -1,6 +1,8 @@
 builds:
   1553ab26-f8ae-470d-4e2b-110db086e0e6:
     version: 8.0.0
+  4133ed5b-b3d3-4942-5666-f53a9ccfe00a:
+    version: 8.0.4
   56e928ac-45a2-47ec-7193-776372d88ee3:
     version: 8.0.1
   7de623ad-e2f8-401c-6909-4e1093b3055a:

@@ -1,0 +1,17 @@
+name: openjdk
+version: 8.0.4
+commit_hash: 43d8798
+uncommitted_changes: false
+jobs:
+- name: java
+  version: 3c81ddca6dac2cb212bff5fbb708d4fd500b4612441361f729f330fe80cb212a
+  fingerprint: 3c81ddca6dac2cb212bff5fbb708d4fd500b4612441361f729f330fe80cb212a
+  sha1: sha256:2557a68ca0d9a5cab62fd205ae4b1ba43dfe35bb892481d31f862ff4f807c9b7
+  packages:
+  - java
+packages:
+- name: java
+  version: 1bae5cec35bd1a8b3fc8447c86f892a5a692c86d55c6e68610e7ea1a3aa4d705
+  fingerprint: 1bae5cec35bd1a8b3fc8447c86f892a5a692c86d55c6e68610e7ea1a3aa4d705
+  sha1: sha256:7782258ef5679c6bd201e6253364fccebc79c2287055d373db503d475efef35f
+  dependencies: []
