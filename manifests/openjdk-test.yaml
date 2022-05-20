@@ -1,0 +1,28 @@
+---
+name: openjdk-test
+instance_groups:
+- name: test
+  azs: [z1]
+  instances: 1
+  vm_type: default
+  stemcell: default
+  networks: [{name: default}]
+  jobs:
+  - name: openjdk
+    release: openjdk
+
+releases:
+- name: openjdk
+  version: latest
+
+stemcells:
+- alias: default
+  os: ubuntu-bionic
+  version: latest
+
+update:
+  canaries: 1
+  canary_watch_time: 30000-1200000
+  max_in_flight: 1
+  serial: false
+  update_watch_time: 5000-1200000

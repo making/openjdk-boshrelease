@@ -1,0 +1,9 @@
+---
+name: openjdk-11
+
+templates: {}
+
+packages:
+- openjdk-11
+
+properties: {}

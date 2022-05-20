@@ -1,19 +1,27 @@
 #!/bin/bash
 
-#!/bin/sh
+function down_add_blob {
+  BLOBS_GROUP=$1
+  FILE=$2
+  URL=$3
+  if [ ! -f blobs/${BLOBS_GROUP}/${FILE} ];then
+    mkdir -p .downloads
+    echo "Downloads resource from the Internet ($URL -> .downloads/$FILE)"
+    curl -L $URL --output .downloads/$FILE
+    echo "Adds blob (.downloads/$FILE -> $BLOBS_GROUP/$FILE), starts tracking blob in config/blobs.yml for inclusion in packages"
+    bosh add-blob .downloads/$FILE $BLOBS_GROUP/$FILE
+  fi
+}
 
-DIR=`pwd`
+JDK_8_VERSION=8u332+9
+down_add_blob "openjdk"  "openjdk-${JDK_8_VERSION}-linux-amd64.tar.gz"  "https://download.bell-sw.com/java/${JDK_8_VERSION}/bellsoft-jdk${JDK_8_VERSION}-linux-amd64.tar.gz"
 
-mkdir -p .downloads
+JDK_11_VERSION=11.0.15+10
+down_add_blob "openjdk"  "openjdk-${JDK_11_VERSION}-linux-amd64.tar.gz"  "https://download.bell-sw.com/java/${JDK_11_VERSION}/bellsoft-jdk${JDK_11_VERSION}-linux-amd64.tar.gz"
 
-cd .downloads
+JDK_17_VERSION=17.0.3+7
+down_add_blob "openjdk"  "openjdk-${JDK_17_VERSION}-linux-amd64.tar.gz"  "https://download.bell-sw.com/java/${JDK_17_VERSION}/bellsoft-jdk${JDK_17_VERSION}-linux-amd64.tar.gz"
 
 
-JDK_VERSION=11.0.3_07
-
-if [ ! -f ${DIR}/blobs/java/openjdk-${JDK_VERSION}.tar.gz ];then
-    curl -L -O -J https://download.run.pivotal.io/openjdk-jdk/bionic/x86_64/openjdk-jdk-${JDK_VERSION}-bionic.tar.gz
-    bosh add-blob --dir=${DIR} openjdk-jdk-${JDK_VERSION}-bionic.tar.gz java/openjdk-${JDK_VERSION}.tar.gz
-fi
-
-cd -
+bosh upload-blobs
+bosh sync-blobs

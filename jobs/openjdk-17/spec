@@ -1,0 +1,9 @@
+---
+name: openjdk-17
+
+templates: {}
+
+packages:
+- openjdk-17
+
+properties: {}

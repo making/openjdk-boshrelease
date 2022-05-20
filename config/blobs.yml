@@ -1,4 +1,9 @@
-java/openjdk-11.0.3_07.tar.gz:
-  size: 195426756
-  object_id: 3da4b9f9-37a5-4090-748b-f52ce790e914
-  sha: 6d97cb3da2f26e6c9fd6a1b577174f1bddc5eb0d
+openjdk/openjdk-8u332+9-linux-amd64.tar.gz:
+  size: 106624763
+  sha: sha256:971f02cd9f18c25407d9afdbe5371c57814d6cd84740eebb2321aeb6203272ef
+openjdk/openjdk-11.0.15+10-linux-amd64.tar.gz:
+  size: 207498462
+  sha: sha256:c7d9d4963313466687ece0730a1e4d7d7fd7683f8cae546316d21112b1858e90
+openjdk/openjdk-17.0.3+7-linux-amd64.tar.gz:
+  size: 206621087
+  sha: sha256:6bbe30730c2f02c8253b14a6c757e4faae583dd7f67d244d7f2220500342d7c4

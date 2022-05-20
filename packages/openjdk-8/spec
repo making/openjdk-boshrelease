@@ -1,0 +1,7 @@
+---
+name: openjdk-8
+
+dependencies: []
+
+files:
+- openjdk/openjdk-8u*.tar.gz

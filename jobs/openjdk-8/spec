@@ -1,0 +1,9 @@
+---
+name: openjdk-8
+
+templates: {}
+
+packages:
+- openjdk-8
+
+properties: {}

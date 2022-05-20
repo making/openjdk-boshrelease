@@ -1,0 +1,7 @@
+---
+name: openjdk-11
+
+dependencies: []
+
+files:
+- openjdk/openjdk-11.*.tar.gz
